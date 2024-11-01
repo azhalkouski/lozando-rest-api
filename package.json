@@ -1,0 +1,33 @@
+{
+  "name": "lozando-rest-api",
+  "version": "1.0.0",
+  "description": "lozando e-commerce system REST api service",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azhalkouski/lozando-rest-api.git"
+  },
+  "keywords": [
+    "node.js",
+    "express.js",
+    "postgresql",
+    "mongodb"
+  ],
+  "author": "Artsiom Zhalkouski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/azhalkouski/lozando-rest-api/issues"
+  },
+  "homepage": "https://github.com/azhalkouski/lozando-rest-api#readme",
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "eslint": "^9.13.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
