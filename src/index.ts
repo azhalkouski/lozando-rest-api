@@ -1,5 +1,9 @@
-const a = 56;
-const b = 3;
-const c = a + b;
+import express from 'express';
 
-console.log(c);
+const PORT = process.env.port || 3000;
+
+const app = express();
+
+app.listen(PORT, () => {
+  console.log("listening on port", PORT);
+});
