@@ -3,7 +3,8 @@ CREATE DATABASE lozando;
 -- Motivation behind usage of ENUMs:
 -- 1) stored compactly in memory since they're represented internally by
 -- small integer values;
--- 2) reraly modified data, not need in frequent insert/update/delete.
+-- 2) don't take part in relationshipt;
+-- 3) reraly modified data, no need in frequent select/insert/update/delete.
 CREATE TYPE gender_t AS ENUM ('men', 'women', 'unisex');
 CREATE TYPE color_t AS ENUM (
   'black', 'brown', 'beige', 'grey', 'white', 'blue', 'petrol', 'turquoise',
@@ -13,15 +14,6 @@ CREATE TYPE color_t AS ENUM (
 
 CREATE TYPE clothing_size_t AS ENUM ('xs', 's', 'm', 'l', 'xl', 'xll');
 CREATE TYPE shoes_size_t AS ENUM ('40', '41', '42', '43', '44', '45');
-
-CREATE TYPE clothing_category_t AS ENUM (
-  'coats and parkas', 'jackets', 'dresses', 'sweatchirts & hoodies',
-  'jeans', 't-shirts & polo', 'tracksuits'
-);
-CREATE TYPE shoes_category_t AS ENUM (
-  'sneakers', 'booties', 'flat shoes', 'heels', 'sport shoes',
-  'business shoes', 'winter shoes', 'outdoor shoes'
-);
 
 
 -- PostgreSQL automatically creates INDEX for:
@@ -39,19 +31,34 @@ CREATE TABLE discounts (
 );
 
 
+CREATE TABLE clothing_categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(40) NOT NULL,
+  gender gender_t,
+  UNIQUE (name, gender)
+);
+
+
+CREATE TABLE shoes_categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(40) NOT NULL,
+  gender gender_t,
+  UNIQUE (name, gender)
+);
+
+
 CREATE TABLE clothing_products (
   id SERIAL PRIMARY KEY,
   model_name VARCHAR(40) NOT NULL,
   description TEXT,
-  brand_id INTEGER REFERENCES brands(id) NOT NULL,
-  category clothing_category_t NOT NULL,
+  brand_id INTEGER NOT NULL REFERENCES brands(id),
+  category_id INTEGER NOT NULL REFERENCES clothing_categories(id),
   size clothing_size_t NOT NULL,
   color color_t NOT NULL,
-  gender gender_t NOT NULL,
   price DECIMAL(7, 2) NOT NULL,
   discount INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (model_name, brand_id, size, color)
+  UNIQUE (brand_id, category_id, model_name, size, color)
 );
 
 
@@ -59,15 +66,14 @@ CREATE TABLE shoes_products (
   id SERIAL PRIMARY KEY,
   model_name VARCHAR(40) NOT NULL,
   description TEXT,
-  brand_id INTEGER REFERENCES brands(id) NOT NULL,
-  category shoes_category_t NOT NULL,
+  brand_id INTEGER NOT NULL REFERENCES brands(id),
+  category_id INTEGER NOT NULL REFERENCES shoes_categories(id),
   size shoes_size_t NOT NULL,
   color color_t NOT NULL,
-  gender gender_t NOT NULL,
   price DECIMAL(7, 2) NOT NULL,
   discount INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (model_name, brand_id, size, color)
+  UNIQUE (brand_id, category_id, model_name, size, color)
 );
 
 
@@ -135,10 +141,10 @@ CREATE TABLE admins (
 -- INDEXes --
 -------------
 CREATE INDEX idx_clothing_products_brand_id ON clothing_products (brand_id);
-CREATE INDEX idx_clothing_products_category ON clothing_products (category);
+CREATE INDEX idx_clothing_products_category_id ON clothing_products (category_id);
 
 CREATE INDEX idx_shoes_products_brand_id ON shoes_products (brand_id);
-CREATE INDEX idx_shoes_products_category ON shoes_products (category);
+CREATE INDEX idx_shoes_products_category_id ON shoes_products (category_id);
 
 CREATE INDEX idx_clothing_inventory_product_id ON clothing_inventory (product_id);
 
