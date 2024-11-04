@@ -15,6 +15,10 @@ CREATE TYPE color_t AS ENUM (
 CREATE TYPE clothing_size_t AS ENUM ('xs', 's', 'm', 'l', 'xl', 'xll');
 CREATE TYPE shoes_size_t AS ENUM ('40', '41', '42', '43', '44', '45');
 
+CREATE TYPE order_status_t AS ENUM (
+  'pending', 'in_progress', 'waiting_for_pick_up', 'shipped', 'delivered'
+);
+
 
 -- PostgreSQL automatically creates INDEX for:
 -- -- PRIMARY KEY constraint: btree
@@ -106,7 +110,7 @@ CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
   customer_id INTEGER NOT NULL REFERENCES customers(id),
   order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status VARCHAR(20) NOT NULL DEFAULT 'pending'
+  status order_status_t NOT NULL
 );
 
 
