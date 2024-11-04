@@ -5,7 +5,6 @@ CREATE DATABASE lozando;
 -- small integer values;
 -- 2) don't take part in relationshipt;
 -- 3) reraly modified data, no need in frequent select/insert/update/delete.
-CREATE TYPE gender_t AS ENUM ('men', 'women', 'unisex');
 CREATE TYPE color_t AS ENUM (
   'black', 'brown', 'beige', 'grey', 'white', 'blue', 'petrol', 'turquoise',
   'green', 'olive', 'yellow', 'orange', 'red', 'pink', 'lilac', 'gold',
@@ -37,17 +36,19 @@ CREATE TABLE discounts (
 
 CREATE TABLE clothing_categories (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(40) NOT NULL,
-  gender gender_t,
-  UNIQUE (name, gender)
+  name VARCHAR(40) UNIQUE NOT NULL,
+  for_men BOOLEAN NOT NULL,
+  for_women BOOLEAN NOT NULL,
+  CHECK (for_men OR for_women)
 );
 
 
 CREATE TABLE shoes_categories (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(40) NOT NULL,
-  gender gender_t,
-  UNIQUE (name, gender)
+  name VARCHAR(40) UNIQUE NOT NULL,
+  for_men BOOLEAN NOT NULL,
+  for_women BOOLEAN NOT NULL,
+  CHECK (for_men OR for_women)
 );
 
 
@@ -59,10 +60,13 @@ CREATE TABLE clothing_products (
   category_id INTEGER NOT NULL REFERENCES clothing_categories(id),
   size clothing_size_t NOT NULL,
   color color_t NOT NULL,
+  for_men BOOLEAN NOT NULL,
+  for_women BOOLEAN NOT NULL,
   price DECIMAL(7, 2) NOT NULL,
   discount INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (brand_id, category_id, model_name, size, color)
+  UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
+  CHECK (for_men OR for_women)
 );
 
 
@@ -74,10 +78,13 @@ CREATE TABLE shoes_products (
   category_id INTEGER NOT NULL REFERENCES shoes_categories(id),
   size shoes_size_t NOT NULL,
   color color_t NOT NULL,
+  for_men BOOLEAN NOT NULL,
+  for_women BOOLEAN NOT NULL,
   price DECIMAL(7, 2) NOT NULL,
   discount INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (brand_id, category_id, model_name, size, color)
+  UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
+  CHECK (for_men OR for_women)
 );
 
 
@@ -110,7 +117,7 @@ CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
   customer_id INTEGER NOT NULL REFERENCES customers(id),
   order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status order_status_t NOT NULL
+  status order_status_t NOT NULL DEFAULT 'pending'
 );
 
 
