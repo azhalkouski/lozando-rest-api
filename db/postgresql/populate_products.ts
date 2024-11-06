@@ -1,4 +1,4 @@
-import dbClient from '../../src/services/dbService/pg_client';
+import dbClient from '../../src/services/dbService/pgClient';
 import { InsertProductT } from '../../src/types';
 
 type CategoryT = {
