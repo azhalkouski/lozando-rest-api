@@ -1,7 +1,4 @@
 import { Pool } from 'pg';
-import { configDotenv } from 'dotenv';
-
-configDotenv();
 
 
 const DB_PORT = process.env.PG_DATABASE_PORT

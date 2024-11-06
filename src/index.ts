@@ -1,6 +1,10 @@
+import { configDotenv } from 'dotenv';
+configDotenv();
+
 import express from 'express';
 import routes from './routes'
-import { logRequest } from './middlewares/logRequest';
+import logRequestMiddleware from './middlewares/logRequestMiddleware';
+import apiKeyMiddleware from './middlewares/apiKeyMiddleware';
 
 // TODO: 1) Setup PostgreSQL connection
 // TODO: 2) Setup MongoDB connection
@@ -9,11 +13,15 @@ import { logRequest } from './middlewares/logRequest';
 // TODO: 5) Override default express error handing middleware
 // TODO: 6) Setup winston logger
 
+
 const PORT = process.env.port || 3000;
 
 const app = express();
 
-app.use('/api', logRequest, routes);
+
+app.use(apiKeyMiddleware);
+
+app.use('/api', logRequestMiddleware, routes);
 
 app.listen(PORT, () => {
   console.log("listening on port", PORT);
