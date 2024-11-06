@@ -1,4 +1,4 @@
-import dbPool from '../../pg_client';
+import dbPool from '../dbService/pg_client';
 import { ProductT } from '../../types';
 import { productsFieldNamesToCamelCase } from './transformUtils';
 
