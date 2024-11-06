@@ -1,19 +1,13 @@
-import dbClient from '../../pg_client';
+import dbPool from '../../pg_client';
 import { ProductT } from '../../types';
 import { productsFieldNamesToCamelCase } from './transformUtils';
 
 export async function getClothingProducts(): Promise<ProductT[]> {
   try {
-    await dbClient.connect();
-    console.log('Database connection open.')
-
     // temporary WIP LIMIT 100
-    const { rows: productsDbRows } = await dbClient.query(
+    const { rows: productsDbRows } = await dbPool.query(
       `SELECT * FROM clothing_products LIMIT 100;`
     );
-
-    await dbClient.end();
-    console.log('Database connection closed.');
 
     const products = productsFieldNamesToCamelCase(productsDbRows);
 
