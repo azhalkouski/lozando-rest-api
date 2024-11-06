@@ -1,5 +1,6 @@
 import express from 'express';
 import routes from './routes'
+import { logRequest } from './middlewares/logRequest';
 
 // TODO: 1) Setup PostgreSQL connection
 // TODO: 2) Setup MongoDB connection
@@ -12,7 +13,7 @@ const PORT = process.env.port || 3000;
 
 const app = express();
 
-app.use('/api', routes);
+app.use('/api', logRequest, routes);
 
 app.listen(PORT, () => {
   console.log("listening on port", PORT);
