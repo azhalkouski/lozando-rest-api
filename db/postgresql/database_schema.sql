@@ -63,7 +63,7 @@ CREATE TABLE clothing_products (
   for_men BOOLEAN NOT NULL,
   for_women BOOLEAN NOT NULL,
   price DECIMAL(7, 2) NOT NULL,
-  discount INTEGER REFERENCES discounts(id),
+  discount_id INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
   CHECK (for_men OR for_women)
@@ -81,7 +81,7 @@ CREATE TABLE shoes_products (
   for_men BOOLEAN NOT NULL,
   for_women BOOLEAN NOT NULL,
   price DECIMAL(7, 2) NOT NULL,
-  discount INTEGER REFERENCES discounts(id),
+  discount_id INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
   CHECK (for_men OR for_women)
