@@ -1,15 +1,5 @@
 import dbClient from '../../src/pg_client';
-
-type ProductT = {
-  modelName: string;
-  brandId: number;
-  categoryId: number;
-  size: string;
-  color: string;
-  forMen: boolean;
-  forWomen: boolean;
-  price: number;
-};
+import { InsertProductT } from '../../src/types';
 
 type CategoryT = {
   id: number;
@@ -93,7 +83,7 @@ const clothingSizes = ['xs', 's', 'm', 'l', 'xl', 'xll'];
 const shoesSizes = ['40', '41', '42', '43', '44', '45'];
 
 function generateProductsList(categoryIds: CategoryT[], sizes: string[], sex: 'male' | 'female') {
-  let productsList: ProductT[] = [];
+  let productsList: InsertProductT[] = [];
   const forMen = sex === 'male';
   const forWomen = sex === 'female';
 
@@ -203,9 +193,9 @@ dbClient.connect()
 
 
 
-function splitIntoBatches(products: ProductT[], batchSize: number): ProductT[][] {
+function splitIntoBatches(products: InsertProductT[], batchSize: number): InsertProductT[][] {
   const totalSize = products.length;
-  const batches: ProductT[][] = [];
+  const batches: InsertProductT[][] = [];
 
   for (let i = 0; i < totalSize; i += batchSize) {
     const batchEndIndex = Math.min(i + batchSize, totalSize);
@@ -221,7 +211,7 @@ function splitIntoBatches(products: ProductT[], batchSize: number): ProductT[][]
 };
 
 
-function saveBatchOfProducts(batch: ProductT[], tableName: 'clothing_products' | 'shoes_products') {
+function saveBatchOfProducts(batch: InsertProductT[], tableName: 'clothing_products' | 'shoes_products') {
   const batchSqlValues: string[] = batch.map((product) => {
     const {
       modelName, brandId, categoryId, size, color, forMen, forWomen, price
