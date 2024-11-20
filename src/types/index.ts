@@ -16,3 +16,17 @@ export type ProductT = InsertProductT & {
   createdAt: Date;
 }
 
+export type SnakeCaseDBProductT = {
+  id: number;
+  model_name: string;
+  description: string;
+  brand_id: number;
+  category_id: number;
+  size: string;
+  color: string;
+  for_men: boolean;
+  for_women: boolean;
+  price: number;
+  discount_id: number;
+  created_at: Date
+};

@@ -1,20 +1,13 @@
-import dbPool from '../dbService/pgClient';
+import dbPool from '../pgDbService/pgClient';
 import { ProductT } from '../../types';
 import { productsFieldNamesToCamelCase } from './transformUtils';
+import PgDbService from '../pgDbService/PgDbService';
 
 export async function getClothingProducts(): Promise<ProductT[]> {
-  try {
-    // temporary WIP LIMIT 100
-    const { rows: productsDbRows } = await dbPool.query(
-      `SELECT * FROM clothing_products LIMIT 100;`
-    );
+  const pgDbService = new PgDbService(dbPool);
+  const productsDbRows = await pgDbService.getClothingProducts();
 
-    const products = productsFieldNamesToCamelCase(productsDbRows);
+  const products = productsFieldNamesToCamelCase(productsDbRows);
 
-    return products;
-  } catch(err) {
-    console.log('getClothingProducts DATABASE ERROR');
-    console.log(err);
-    throw new Error(JSON.stringify(err));
-  }
+  return products;
 }
