@@ -5,6 +5,8 @@ CREATE DATABASE lozando;
 -- small integer values;
 -- 2) don't take part in relationshipt;
 -- 3) reraly modified data, no need in frequent select/insert/update/delete.
+-- ! still. why enum? what if I delete one colore that is in use?
+-- ! what if I made a mistake in the word `white` and I want to fix the typo?
 CREATE TYPE color_t AS ENUM (
   'black', 'brown', 'beige', 'grey', 'white', 'blue', 'petrol', 'turquoise',
   'green', 'olive', 'yellow', 'orange', 'red', 'pink', 'lilac', 'gold',
@@ -62,7 +64,7 @@ CREATE TABLE clothing_products (
   color color_t NOT NULL,
   for_men BOOLEAN NOT NULL,
   for_women BOOLEAN NOT NULL,
-  price DECIMAL(7, 2) NOT NULL,
+  price MONEY NOT NULL,
   discount_id INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
@@ -80,7 +82,7 @@ CREATE TABLE shoes_products (
   color color_t NOT NULL,
   for_men BOOLEAN NOT NULL,
   for_women BOOLEAN NOT NULL,
-  price DECIMAL(7, 2) NOT NULL,
+  price MONEY NOT NULL,
   discount_id INTEGER REFERENCES discounts(id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
@@ -117,7 +119,8 @@ CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
   customer_id INTEGER NOT NULL REFERENCES customers(id),
   order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status order_status_t NOT NULL DEFAULT 'pending'
+  status order_status_t NOT NULL DEFAULT 'pending',
+  total_price MONEY NOT NULL
 );
 
 
