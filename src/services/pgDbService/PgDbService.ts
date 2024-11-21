@@ -24,14 +24,14 @@ class PgDbService implements RelationalDbServiceI {
    */
   async getClothingProducts() {
     // ! temporary hardcoded LIMIT 100
-    const query = 'SELECT * FROM clothding_products LIMIT 100';
+    const query = 'SELECT * FROM clothing_products LIMIT 100';
 
     try {
       const { rows } = await this.pgPool.query<SnakeCaseDBProductT>(query);
 
       return rows;
     } catch(err) {
-      const dbException: AppException = getDbException(query, err);
+      const dbException: AppException = getDbException(err);
 
       throw dbException;
     }
