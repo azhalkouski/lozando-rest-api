@@ -1,187 +1,211 @@
-CREATE DATABASE lozando;
+CREATE TYPE gender_t AS ENUM ('women', 'men');
+CREATE TYPE product_catogory_aggregation_group_t AS ENUM ('clothing', 'shoes');
 
--- Motivation behind usage of ENUMs:
--- 1) stored compactly in memory since they're represented internally by
--- small integer values;
--- 2) don't take part in relationshipt;
--- 3) reraly modified data, no need in frequent select/insert/update/delete.
--- ! still. why enum? what if I delete one colore that is in use?
--- ! what if I made a mistake in the word `white` and I want to fix the typo?
-CREATE TYPE color_t AS ENUM (
-  'black', 'brown', 'beige', 'grey', 'white', 'blue', 'petrol', 'turquoise',
-  'green', 'olive', 'yellow', 'orange', 'red', 'pink', 'lilac', 'gold',
-  'silver', 'multi-coloured'
+CREATE TABLE genders (
+  id SERIAL PRIMARY KEY,
+  name gender_t UNIQUE NOT NULL
 );
 
-CREATE TYPE clothing_size_t AS ENUM ('xs', 's', 'm', 'l', 'xl', 'xll');
-CREATE TYPE shoes_size_t AS ENUM ('40', '41', '42', '43', '44', '45');
-
-CREATE TYPE order_status_t AS ENUM (
-  'pending', 'in_progress', 'waiting_for_pick_up', 'shipped', 'delivered'
+CREATE TABLE product_category_aggregation_groups (
+  id SERIAL PRIMARY KEY,
+  name product_catogory_aggregation_group_t UNIQUE NOT NULL
 );
 
+CREATE TABLE product_categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(30) UNIQUE NOT NULL,
+  aggregation_group_id INT NOT NULL REFERENCES product_category_aggregation_groups(id)
+);
 
--- PostgreSQL automatically creates INDEX for:
--- -- PRIMARY KEY constraint: btree
--- -- UNIQUE constraint: btree
+CREATE TABLE product_sub_categories (
+  id SERIAL PRIMARY KEY,
+  product_category_id INT NOT NULL REFERENCES product_categories(id),
+  name VARCHAR(30) NOT NULL,
+  -- why UNIQUE CONSTRAINT ON product_category_id, name?
+  -- because t-shirts->polo and sportwear -> polo. I can't make polo be unique
+  UNIQUE (product_category_id, name)
+);
+
 CREATE TABLE brands (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(40) UNIQUE NOT NULL
+  name VARCHAR(30) UNIQUE NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE pattern_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(30) UNIQUE NOT NULL
+);
+
+CREATE TABLE colors (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(25) UNIQUE NOT NULL
+);
+
+CREATE TABLE collar_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE neckline_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE multipacks (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(10) UNIQUE NOT NULL
+);
+
+CREATE TABLE materials (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE sleeve_length_codes (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE fit_length_codes (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(15) UNIQUE NOT NULL
+);
+
+CREATE TABLE lining_materials (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(15) UNIQUE NOT NULL
+);
+
+CREATE TABLE upper_lower_wear_sizes (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(10) UNIQUE NOT NULL
+);
+
+CREATE TABLE feet_sizes (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(10) UNIQUE NOT NULL
+);
+
+CREATE TABLE shape_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE fit_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(30) UNIQUE NOT NULL
+);
+
+CREATE TABLE specialty_sizes (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(10) UNIQUE NOT NULL
+);
+
+
+CREATE TABLE trouser_rise_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(10) UNIQUE NOT NULL
+);
+
+CREATE TABLE occasion_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE styles (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE fashion_collections (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE fastening_types (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(10) UNIQUE NOT NULL
+);
+
+CREATE TABLE products_catalog (
+  id SERIAL,
+  article_number VARCHAR(13) PRIMARY KEY,
+  product_category_id INT NOT NULL REFERENCES product_categories(id),
+  product_sub_category_id INT NOT NULL REFERENCES product_sub_categories(id),
+  gender_id INT NOT NULL REFERENCES genders(id),
+  is_for_kids BOOLEAN NOT NULL DEFAULT FALSE,
+  brand_id INT NOT NULL REFERENCES brands(id),
+  name VARCHAR(40) NOT NULL,
+  sizes JSONB NOT NULL,
+  color_id INT NOT NULL REFERENCES colors(id),
+  pattern_type_id INT REFERENCES pattern_types(id),
+  neckline_type_id INT REFERENCES neckline_types(id),
+  collar_type_id INT REFERENCES collar_types(id),
+  materials JSONB NOT NULL,
+  sleeve_length_code_id INT REFERENCES sleeve_length_codes(id),
+  shape_type_id INT REFERENCES shape_types(id),
+  fit_type_id INT REFERENCES fit_types(id),
+  fit_length_code_id INT REFERENCES fit_length_codes(id),
+  -- 88.4 cm (Size S) - when it is REALLY SHORT and it is necessary to be conveyed
+  total_length VARCHAR(50),
+  trouser_rise_type_id INT REFERENCES trouser_rise_types(id),
+  fastening_type_id INT REFERENCES fastening_types(id),
+  multipack_id INT REFERENCES multipacks(id),
+  pockets VARCHAR(50),
+  -- example of qualities: down coat is water-repellent
+  qualities VARCHAR(50),
+  back_width VARCHAR(50),
+  hood_detail VARCHAR(50),
+  specialty_size_id INT REFERENCES specialty_sizes(id),
+  occasion_type_id INT REFERENCES occasion_types(id),
+  style_id INT REFERENCES styles(id),
+  -- example of a cut: asymmetrical (regarding shoulders)
+  cut_type VARCHAR(50),
+  collection_id INT REFERENCES fashion_collections(id),
+  -- example of additional_details "Belt indluded" for a dress with a belt
+  additional_details VARCHAR(50),
+  purchase_price MONEY,
+  CHECK(sizes ? 'sizes')
 );
 
 
 CREATE TABLE discounts (
   id SERIAL PRIMARY KEY,
-  procentage DECIMAL(5,1) UNIQUE NOT NULL
-);
-
-
-CREATE TABLE clothing_categories (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(40) UNIQUE NOT NULL,
-  for_men BOOLEAN NOT NULL,
-  for_women BOOLEAN NOT NULL,
-  CHECK (for_men OR for_women)
-);
-
-
-CREATE TABLE shoes_categories (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(40) UNIQUE NOT NULL,
-  for_men BOOLEAN NOT NULL,
-  for_women BOOLEAN NOT NULL,
-  CHECK (for_men OR for_women)
-);
-
-
-CREATE TABLE clothing_products (
-  id SERIAL PRIMARY KEY,
-  model_name VARCHAR(40) NOT NULL,
-  description TEXT,
-  brand_id INTEGER NOT NULL REFERENCES brands(id),
-  category_id INTEGER NOT NULL REFERENCES clothing_categories(id),
-  size clothing_size_t NOT NULL,
-  color color_t NOT NULL,
-  for_men BOOLEAN NOT NULL,
-  for_women BOOLEAN NOT NULL,
-  price MONEY NOT NULL,
-  discount_id INTEGER REFERENCES discounts(id),
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
-  CHECK (for_men OR for_women)
-);
-
-
-CREATE TABLE shoes_products (
-  id SERIAL PRIMARY KEY,
-  model_name VARCHAR(40) NOT NULL,
-  description TEXT,
-  brand_id INTEGER NOT NULL REFERENCES brands(id),
-  category_id INTEGER NOT NULL REFERENCES shoes_categories(id),
-  size shoes_size_t NOT NULL,
-  color color_t NOT NULL,
-  for_men BOOLEAN NOT NULL,
-  for_women BOOLEAN NOT NULL,
-  price MONEY NOT NULL,
-  discount_id INTEGER REFERENCES discounts(id),
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (brand_id, category_id, model_name, size, color, for_men, for_women),
-  CHECK (for_men OR for_women)
-);
-
-
-CREATE TABLE clothing_inventory (
-  id SERIAL PRIMARY KEY,
-  product_id INTEGER NOT NULL REFERENCES clothing_products(id) ON DELETE CASCADE,
-  stock INT NOT NULL CHECK (stock >= 0),
-  last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE TABLE shoes_inventory (
-  id SERIAL PRIMARY KEY,
-  product_id INTEGER NOT NULL REFERENCES shoes_products(id) ON DELETE CASCADE,
-  stock INT NOT NULL CHECK (stock >= 0),
-  last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE TABLE customers (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(50) UNIQUE NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
+  label CHAR(3) NOT NULL,
+  value DECIMAL(3,2) UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
-CREATE TABLE orders (
+CREATE TABLE inventory (
   id SERIAL PRIMARY KEY,
-  customer_id INTEGER NOT NULL REFERENCES customers(id),
-  order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status order_status_t NOT NULL DEFAULT 'pending',
-  total_price MONEY NOT NULL
+  article_number VARCHAR(13) NOT NULL REFERENCES products_catalog(article_number),
+  size VARCHAR(10) NOT NULL,
+  stock INT NOT NULL,
+  -- `selling_price_before_discount` depends on availability, demand level ,etc.
+  -- and it is usually differs from the purchase_price
+  selling_price_before_discount MONEY,
+  discount_id INT REFERENCES discounts(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  -- TRIGGER on updated_at `update_inventory_updated_at`
+  updated_at TIMESTAMP NOT NULL,
+  -- UNIQUE CONSTRAINT on (article_number, size) because model+color+size = distinct unit
+  -- which can be in hight demand AND low availbaility, and we want to increase the
+  -- price, OR it is in low demand we rather apply a discount and get rid of it
+  -- article_number is unique for model and its color. One distinct model of two
+  -- different colors => two distinct article_number(s)
+  UNIQUE (article_number, size)
 );
 
-
-CREATE TABLE order_items_clothing (
-  id SERIAL PRIMARY KEY,
-  order_id INTEGER NOT NULL REFERENCES orders(id),
-  product_id INTEGER NOT NULL REFERENCES clothing_products(id),
-  quantity INTEGER NOT NULL CHECK (quantity > 0),
-  UNIQUE (order_id, product_id)
-);
-
-
-CREATE TABLE order_items_shoes (
-  id SERIAL PRIMARY KEY,
-  order_id INTEGER NOT NULL REFERENCES orders(id),
-  product_id INTEGER NOT NULL REFERENCES shoes_products(id),
-  quantity INTEGER NOT NULL CHECK (quantity > 0),
-  UNIQUE (order_id, product_id)
-);
-
-
-CREATE TABLE admins (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(50) NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-
--------------
--- INDEXes --
--------------
-CREATE INDEX idx_clothing_products_brand_id ON clothing_products (brand_id);
-CREATE INDEX idx_clothing_products_category_id ON clothing_products (category_id);
-
-CREATE INDEX idx_shoes_products_brand_id ON shoes_products (brand_id);
-CREATE INDEX idx_shoes_products_category_id ON shoes_products (category_id);
-
-CREATE INDEX idx_clothing_inventory_product_id ON clothing_inventory (product_id);
-
-CREATE INDEX idx_shoes_inventory_product_id ON shoes_inventory (product_id);
-
-
---------------
--- TRIGGERs --
---------------
 CREATE FUNCTION update_last_updated()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.last_updated = CURRENT_TIMESTAMP;
+  NEW.updated_at = CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_clothing_inventory_last_updated
-BEFORE UPDATE ON clothing_inventory
-FOR EACH ROW
-EXECUTE FUNCTION update_last_updated();
-
-CREATE TRIGGER update_shoes_inventory_last_updated
-BEFORE UPDATE ON shoes_inventory
+CREATE TRIGGER update_inventory_updated_at
+BEFORE UPDATE ON inventory
 FOR EACH ROW
 EXECUTE FUNCTION update_last_updated();

@@ -1,16 +1,12 @@
 import { Pool } from 'pg';
 
 
-const DB_PORT = process.env.PG_DATABASE_PORT
-? parseInt(process.env.PG_DATABASE_PORT)
-: 5432;
-
 // Configure database connection
 const dbPool = new Pool({
-  user: process.env.PG_DATABASE_USER,
-  host: process.env.PG_DATABASE_HOST,
-  database: process.env.PG_DATABASE_NAME,
-  port:  DB_PORT,
+  user: process.env.PG_DEV_DATABASE_USER,
+  host: process.env.PG_DEV_DATABASE_HOST,
+  database: process.env.PG_DEV_DATABASE_NAME,
+  port:  parseInt(process.env.PG_DEV_DATABASE_PORT || '5432'),
   max: 10,
   idleTimeoutMillis: 30000
 });
