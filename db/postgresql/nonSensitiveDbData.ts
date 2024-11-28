@@ -31,7 +31,7 @@ export const GENDER_TYPES = [
   'men'
 ];
 
-export const PRODUCT_CATEGORY_AGGREGATION_GROUPS = [
+export const PRODUCT_CATEGORIES_AGGREGATION_GROUPS = [
   'clothing',
   'shoes'
 ];

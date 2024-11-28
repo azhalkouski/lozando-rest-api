@@ -1,20 +1,21 @@
 CREATE TYPE gender_t AS ENUM ('women', 'men');
-CREATE TYPE product_catogory_aggregation_group_t AS ENUM ('clothing', 'shoes');
+CREATE TYPE product_categories_aggregation_group_t AS ENUM ('clothing', 'shoes');
 
 CREATE TABLE genders (
   id SERIAL PRIMARY KEY,
   name gender_t UNIQUE NOT NULL
 );
 
-CREATE TABLE product_category_aggregation_groups (
+-- `clothing` is an aggregation of product_categories such as `dresses`, `shirts`, etc
+CREATE TABLE product_categories_aggregation_groups (
   id SERIAL PRIMARY KEY,
-  name product_catogory_aggregation_group_t UNIQUE NOT NULL
+  name product_categories_aggregation_group_t UNIQUE NOT NULL
 );
 
 CREATE TABLE product_categories (
   id SERIAL PRIMARY KEY,
   name VARCHAR(30) UNIQUE NOT NULL,
-  aggregation_group_id INT NOT NULL REFERENCES product_category_aggregation_groups(id)
+  aggregation_group_id INT NOT NULL REFERENCES product_categories_aggregation_groups(id)
 );
 
 CREATE TABLE product_sub_categories (

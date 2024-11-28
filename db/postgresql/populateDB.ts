@@ -6,7 +6,7 @@ import { clothingProducts } from '../../productsData';
 import {
   BRANDS,
   GENDER_TYPES,
-  PRODUCT_CATEGORY_AGGREGATION_GROUPS,
+  PRODUCT_CATEGORIES_AGGREGATION_GROUPS,
   PRODUCT_CATEGORIES_WITH_AGGREGATION_GROUPS,
   PRODUCT_SUB_CATEGORIES,
   COLORS,
@@ -83,7 +83,7 @@ function getSqlQueriesForPopulateIndependentProductAttrs() {
   // independent tables
   const tableNamesToTableValues: [string, string[]][] = [
     ['genders', GENDER_TYPES],
-    ['product_category_aggregation_groups', PRODUCT_CATEGORY_AGGREGATION_GROUPS],
+    ['product_category_aggregation_groups', PRODUCT_CATEGORIES_AGGREGATION_GROUPS],
     ['brands', BRANDS],
     ['pattern_types', PATTER_TYPES],
     ['colors', COLORS],
@@ -126,7 +126,7 @@ function getSqlQueriesForPopulateIndependentProductAttrs() {
 
 async function populateProductCategories(pgClient: Client) {
   const {rows: productCatAggrGroups} = await pgClient.query(
-    `SELECT id, name FROM product_category_aggregation_groups;`
+    `SELECT id, name FROM product_categories_aggregation_groups;`
   );
   const productCategoriesValues = PRODUCT_CATEGORIES_WITH_AGGREGATION_GROUPS
     .map((catNameWithAggrGroup) => {
