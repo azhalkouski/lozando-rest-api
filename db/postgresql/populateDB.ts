@@ -308,35 +308,35 @@ async function populateProductsCatalog(pgClient: Client) {
     const fit_type_id = getId(allFitTypes, 'fit_type_id');
     const clothing_length_code_id = getId(allFitLengthCodes, 'clothing_length_code_id');
     const total_length = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.total_length] || ''
+      product[sqlFieldsToInputFields.total_length]
     );
     const trouser_rise_type_id = getId(allTrouserRiseTypes, 'trouser_rise_type_id');
     const fastening_type_id = getId(allFasteningTypes, 'fastening_type_id');
     const multipack_id = getId(allMultipacks, 'multipack_id');
     const pockets = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.pockets || '']
+      product[sqlFieldsToInputFields.pockets]
     );
     const qualities = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.qualities || '']
+      product[sqlFieldsToInputFields.qualities]
     );
     const back_width = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.back_width || '']
+      product[sqlFieldsToInputFields.back_width]
     );
     const hood_detail = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.hood_detail || '']
+      product[sqlFieldsToInputFields.hood_detail]
     );
     const specialty_size_id = getId( allSpecialtySizes, 'specialty_size_id');
     const occasion_type_id = getId(allOccasionTypes, 'occasion_type_id');
     const style_id = getId(allStyles, 'style_id');
     const cut_type = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.cut_type || '']
+      product[sqlFieldsToInputFields.cut_type]
     );
     const collection_id = getId(allFashionCollections, 'collection_id');
     const additional_details = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.additional_details || '']
+      product[sqlFieldsToInputFields.additional_details]
     );
     const purchase_price = wrapWithSingleQuotes(
-      product[sqlFieldsToInputFields.purchase_price || '']
+      product[sqlFieldsToInputFields.purchase_price]
     );
 
     return `(${article_number}, ${product_category_id}, ${product_sub_category_id},
