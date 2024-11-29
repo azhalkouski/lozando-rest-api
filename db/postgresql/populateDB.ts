@@ -19,7 +19,7 @@ import {
   TROUSER_RISE_TYPES,
   PATTER_TYPES,
   SHAPE_TYPES,
-  FIT_LENGTH_CODES,
+  CLOTHING_LENGTH_CODES,
   SLEEVE_LENGTH_CODES,
   MATERIALS,
   LINING_MATERIALS,
@@ -82,8 +82,8 @@ async function populateIndependentProductAttrs(pgClient: Client) {
 function getSqlQueriesForPopulateIndependentProductAttrs() {
   // independent tables
   const tableNamesToTableValues: [string, string[]][] = [
-    ['genders', GENDER_TYPES],
-    ['product_category_aggregation_groups', PRODUCT_CATEGORIES_AGGREGATION_GROUPS],
+    ['gender_types', GENDER_TYPES],
+    ['product_categories_aggregation_groups', PRODUCT_CATEGORIES_AGGREGATION_GROUPS],
     ['brands', BRANDS],
     ['pattern_types', PATTER_TYPES],
     ['colors', COLORS],
@@ -92,7 +92,7 @@ function getSqlQueriesForPopulateIndependentProductAttrs() {
     ['multipacks', []],
     ['materials', MATERIALS],
     ['sleeve_length_codes', SLEEVE_LENGTH_CODES],
-    ['fit_length_codes', FIT_LENGTH_CODES],
+    ['clothing_length_codes', CLOTHING_LENGTH_CODES],
     ['lining_materials', LINING_MATERIALS],
     ['upper_lower_wear_sizes', UPPER_LOWER_WEAR_SIZES],
     ['feet_sizes', FEET_SIZES],
@@ -171,7 +171,7 @@ async function populateProductsCatalog(pgClient: Client) {
     'article_number': 'articleNumber',
     'product_category_id': 'category',
     'product_sub_category_id': 'subCategory',
-    'gender_id': 'gender',
+    'gender_type_id': 'genderType',
     'is_for_kids': 'isForKids',
     'brand_id': 'brand',
     'name': 'name',
@@ -184,7 +184,7 @@ async function populateProductsCatalog(pgClient: Client) {
     'sleeve_length_code_id': 'sleeveLength',
     'shape_type_id': 'shape',
     'fit_type_id': 'fit',
-    'fit_length_code_id': 'clothingLength',
+    'clothing_length_code_id': 'clothingLength',
     'total_length': 'totalLength',
     'trouser_rise_type_id': 'trouserRise',
     'fastening_type_id': 'fastening',
@@ -211,8 +211,8 @@ async function populateProductsCatalog(pgClient: Client) {
   const queryProductSubCategories = `SELECT id, name FROM product_sub_categories;`;
   const { rows: allProductSubCategories } =
     await pgClient.query(queryProductSubCategories);
-  const queryGenders = `SELECT id, name FROM genders;`;
-  const { rows: allGenders } = await pgClient.query(queryGenders);
+  const queryGenderTypes = `SELECT id, name FROM gender_types;`;
+  const { rows: allGenderTypes } = await pgClient.query(queryGenderTypes);
   const queryBrands = `SELECT id, name FROM brands;`;
   const { rows: allBrands } = await pgClient.query(queryBrands);
   const queryColors = `SELECT id, name FROM colors;`;
@@ -229,7 +229,7 @@ async function populateProductsCatalog(pgClient: Client) {
   const { rows: allShapeTypes } = await pgClient.query(queryShapeTypes);
   const queryFitTypes = `SELECT id, name FROM fit_types;`;
   const { rows: allFitTypes } = await pgClient.query(queryFitTypes);
-  const queryFitLengthCodes = `SELECT id, name FROM fit_length_codes;`;
+  const queryFitLengthCodes = `SELECT id, name FROM CLOTHING_LENGTH_CODES;`;
   const { rows: allFitLengthCodes } = await pgClient.query(queryFitLengthCodes);
   const queryTrouserRiseTypes = `SELECT id, name FROM trouser_rise_types;`;
   const { rows: allTrouserRiseTypes } = await pgClient.query(queryTrouserRiseTypes);
@@ -289,7 +289,7 @@ async function populateProductsCatalog(pgClient: Client) {
     const product_sub_category_id = getId(
       allProductSubCategories, 'product_sub_category_id'
     );
-    const gender_id = getId(allGenders, 'gender_id');
+    const gender_type_id = getId(allGenderTypes, 'gender_type_id');
     const is_for_kids = product[sqlFieldsToInputFields.is_for_kids] || false;
     const brand_id = getId(allBrands, 'brand_id');
     const name = wrapWithSingleQuotes(product[sqlFieldsToInputFields.name]);
@@ -306,7 +306,7 @@ async function populateProductsCatalog(pgClient: Client) {
     const sleeve_length_code_id = getId(allSleeveLengthCodes, 'sleeve_length_code_id');
     const shape_type_id = getId(allShapeTypes, 'shape_type_id');
     const fit_type_id = getId(allFitTypes, 'fit_type_id');
-    const fit_length_code_id = getId(allFitLengthCodes, 'fit_length_code_id');
+    const clothing_length_code_id = getId(allFitLengthCodes, 'clothing_length_code_id');
     const total_length = wrapWithSingleQuotes(
       product[sqlFieldsToInputFields.total_length] || ''
     );
@@ -340,9 +340,9 @@ async function populateProductsCatalog(pgClient: Client) {
     );
 
     return `(${article_number}, ${product_category_id}, ${product_sub_category_id},
-      ${gender_id}, ${is_for_kids}, ${brand_id}, ${name}, ${sizes}, ${color_id},
+      ${gender_type_id}, ${is_for_kids}, ${brand_id}, ${name}, ${sizes}, ${color_id},
       ${pattern_type_id}, ${neckline_type_id}, ${collar_type_id}, ${materials},
-      ${sleeve_length_code_id}, ${shape_type_id}, ${fit_type_id}, ${fit_length_code_id},
+      ${sleeve_length_code_id}, ${shape_type_id}, ${fit_type_id}, ${clothing_length_code_id},
       ${total_length}, ${trouser_rise_type_id}, ${fastening_type_id}, ${multipack_id},
       ${pockets}, ${qualities}, ${back_width}, ${hood_detail}, ${specialty_size_id},
       ${occasion_type_id}, ${style_id}, ${cut_type}, ${collection_id},
@@ -351,10 +351,10 @@ async function populateProductsCatalog(pgClient: Client) {
 
   const insertIntoProductsCatalogQuery = `
     INSERT INTO products_catalog
-    ( article_number, product_category_id, product_sub_category_id, gender_id,
+    ( article_number, product_category_id, product_sub_category_id, gender_type_id,
      is_for_kids, brand_id, name, sizes, color_id, pattern_type_id, neckline_type_id,
      collar_type_id, materials, sleeve_length_code_id, shape_type_id, fit_type_id,
-     fit_length_code_id, total_length, trouser_rise_type_id, fastening_type_id,
+     clothing_length_code_id, total_length, trouser_rise_type_id, fastening_type_id,
      multipack_id, pockets, qualities, back_width, hood_detail, specialty_size_id,
      occasion_type_id, style_id, cut_type, collection_id, additional_details,
      purchase_price )

@@ -2,7 +2,7 @@ export type CamelCaseProductT = {
   articleNumber: string;
   category: string;
   subCategory: string;
-  gender: string;
+  genderType: string;
   isForKids: boolean;
   brand: string;
   name: string;
@@ -37,7 +37,7 @@ export type SnakeCaseProductT = {
   article_number: string;
   product_category_id: number;
   product_sub_category_id: number;
-  gender_id: number;
+  gender_type_id: number;
   is_for_kids: boolean;
   brand_id: number;
   name: string;
@@ -50,7 +50,7 @@ export type SnakeCaseProductT = {
   sleeve_length_code_id: number;
   shape_type_id: number;
   fit_type_id: number;
-  fit_length_code_id: number;
+  clothing_length_code_id: number;
   total_length: string;
   trouser_rise_type_id: number;
   fastening_type_id: number;

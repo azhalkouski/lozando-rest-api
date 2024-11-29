@@ -1,12 +1,13 @@
-CREATE TYPE gender_t AS ENUM ('women', 'men');
+CREATE TYPE gender_type_t AS ENUM ('women', 'men', 'unisex');
 CREATE TYPE product_categories_aggregation_group_t AS ENUM ('clothing', 'shoes');
 
-CREATE TABLE genders (
+CREATE TABLE gender_types (
   id SERIAL PRIMARY KEY,
-  name gender_t UNIQUE NOT NULL
+  name gender_type_t UNIQUE NOT NULL
 );
 
--- `clothing` is an aggregation of product_categories such as `dresses`, `shirts`, etc
+-- `clothing` is an aggregation group of product_categories such as
+-- `dresses`, `shirts`, other clothing categories
 CREATE TABLE product_categories_aggregation_groups (
   id SERIAL PRIMARY KEY,
   name product_categories_aggregation_group_t UNIQUE NOT NULL
@@ -68,8 +69,7 @@ CREATE TABLE sleeve_length_codes (
   name VARCHAR(20) UNIQUE NOT NULL
 );
 
--- ! CREATE TABLE clothing_length_codes (
-CREATE TABLE fit_length_codes (
+CREATE TABLE clothing_length_codes (
   id SERIAL PRIMARY KEY,
   name VARCHAR(15) UNIQUE NOT NULL
 );
@@ -135,7 +135,7 @@ CREATE TABLE products_catalog (
   article_number VARCHAR(13) PRIMARY KEY,
   product_category_id INT NOT NULL REFERENCES product_categories(id),
   product_sub_category_id INT NOT NULL REFERENCES product_sub_categories(id),
-  gender_id INT NOT NULL REFERENCES genders(id),
+  gender_type_id INT NOT NULL REFERENCES gender_types(id),
   is_for_kids BOOLEAN NOT NULL DEFAULT FALSE,
   brand_id INT NOT NULL REFERENCES brands(id),
   name VARCHAR(40) NOT NULL,
@@ -148,7 +148,7 @@ CREATE TABLE products_catalog (
   sleeve_length_code_id INT REFERENCES sleeve_length_codes(id),
   shape_type_id INT REFERENCES shape_types(id),
   fit_type_id INT REFERENCES fit_types(id),
-  fit_length_code_id INT REFERENCES fit_length_codes(id),
+  clothing_length_code_id INT REFERENCES clothing_length_codes(id),
   -- 88.4 cm (Size S) - when it is REALLY SHORT and it is necessary to be conveyed
   total_length VARCHAR(50),
   trouser_rise_type_id INT REFERENCES trouser_rise_types(id),

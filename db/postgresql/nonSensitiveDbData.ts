@@ -28,7 +28,8 @@ export const BRANDS = [
 
 export const GENDER_TYPES = [
   'women',
-  'men'
+  'men',
+  'unisex'
 ];
 
 export const PRODUCT_CATEGORIES_AGGREGATION_GROUPS = [
@@ -279,7 +280,7 @@ export const SHAPE_TYPES = [
   'boody-hugging'
 ];
 
-export const FIT_LENGTH_CODES = [
+export const CLOTHING_LENGTH_CODES = [
   'normal',
   'short',
   'extra short',
