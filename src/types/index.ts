@@ -72,9 +72,9 @@ export type CamelCaseProductKeys = keyof CamelCaseProductT;
 
 export type SnakeCaseProductKeys = keyof SnakeCaseProductT;
 
-export type GenderTypesT = 'women' | 'men';
+export type GenderT = 'women' | 'men';
 
 export type ListOfProductsQuery = {
-  genderType: GenderTypesT;
+  gender: GenderT;
   isForKids: boolean | undefined;
 }

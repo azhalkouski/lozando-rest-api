@@ -1,5 +1,5 @@
 import { Pool, Client } from 'pg';
-import { SnakeCaseProductT, ListOfProductsQuery, GenderTypesT } from '../../types';
+import { SnakeCaseProductT, ListOfProductsQuery } from '../../types';
 import AppException from '../../exceptions/AppException';
 import { getDbException } from './utils';
 
@@ -8,7 +8,7 @@ type CustomerTypeT = 'women' | 'men';
 
 interface RelationalDbServiceI {
   readonly pgPool: Pool;
-  getClothingProducts({genderType, isForKids}: ListOfProductsQuery): Promise<SnakeCaseProductT[]>
+  getClothingProducts({gender, isForKids}: ListOfProductsQuery): Promise<SnakeCaseProductT[]>
 }
 
 /**
@@ -24,7 +24,7 @@ class PgDbService implements RelationalDbServiceI {
   /** 
    * @throws {AppException}
    */
-  async getClothingProducts({genderType, isForKids = false}: ListOfProductsQuery) {
+  async getClothingProducts({gender, isForKids = false}: ListOfProductsQuery) {
     try {
       let whereClause = `is_for_kids = ${isForKids}`;
 
@@ -32,8 +32,8 @@ class PgDbService implements RelationalDbServiceI {
         `SELECT id, name FROM genders;`
       );
 
-      const genderTypeId = genderIds.find(({id, name}) => name === genderType).id
-      whereClause = `gender_id = ${genderTypeId} AND  ${whereClause}`;
+      const genderId = genderIds.find(({id, name}) => name === gender).id
+      whereClause = `gender_id = ${genderId} AND  ${whereClause}`;
 
       const query = `SELECT * FROM products_catalog WHERE ${whereClause};`;
       const { rows } = await this.pgPool.query<SnakeCaseProductT>(query);
