@@ -5,7 +5,7 @@ import { CamelCaseProductKeys, SnakeCaseProductKeys } from '../../src/types';
 import { clothingProducts } from '../../productsData';
 import {
   BRANDS,
-  GENDER_TYPES,
+  GENDERS,
   PRODUCT_CATEGORIES_AGGREGATION_GROUPS,
   PRODUCT_CATEGORIES_WITH_AGGREGATION_GROUPS,
   PRODUCT_SUB_CATEGORIES,
@@ -82,7 +82,7 @@ async function populateIndependentProductAttrs(pgClient: Client) {
 function getSqlQueriesForPopulateIndependentProductAttrs() {
   // independent tables
   const tableNamesToTableValues: [string, string[]][] = [
-    ['gender_types', GENDER_TYPES],
+    ['genders', GENDERS],
     ['product_categories_aggregation_groups', PRODUCT_CATEGORIES_AGGREGATION_GROUPS],
     ['brands', BRANDS],
     ['pattern_types', PATTER_TYPES],
@@ -171,7 +171,7 @@ async function populateProductsCatalog(pgClient: Client) {
     'article_number': 'articleNumber',
     'product_category_id': 'category',
     'product_sub_category_id': 'subCategory',
-    'gender_type_id': 'genderType',
+    'gender_id': 'gender',
     'is_for_kids': 'isForKids',
     'brand_id': 'brand',
     'name': 'name',
@@ -211,8 +211,8 @@ async function populateProductsCatalog(pgClient: Client) {
   const queryProductSubCategories = `SELECT id, name FROM product_sub_categories;`;
   const { rows: allProductSubCategories } =
     await pgClient.query(queryProductSubCategories);
-  const queryGenderTypes = `SELECT id, name FROM gender_types;`;
-  const { rows: allGenderTypes } = await pgClient.query(queryGenderTypes);
+  const queryGenders = `SELECT id, name FROM genders;`;
+  const { rows: allGenders } = await pgClient.query(queryGenders);
   const queryBrands = `SELECT id, name FROM brands;`;
   const { rows: allBrands } = await pgClient.query(queryBrands);
   const queryColors = `SELECT id, name FROM colors;`;
@@ -289,7 +289,7 @@ async function populateProductsCatalog(pgClient: Client) {
     const product_sub_category_id = getId(
       allProductSubCategories, 'product_sub_category_id'
     );
-    const gender_type_id = getId(allGenderTypes, 'gender_type_id');
+    const gender_id = getId(allGenders, 'gender_id');
     const is_for_kids = product[sqlFieldsToInputFields.is_for_kids] || false;
     const brand_id = getId(allBrands, 'brand_id');
     const name = wrapWithSingleQuotes(product[sqlFieldsToInputFields.name]);
@@ -340,7 +340,7 @@ async function populateProductsCatalog(pgClient: Client) {
     );
 
     return `(${article_number}, ${product_category_id}, ${product_sub_category_id},
-      ${gender_type_id}, ${is_for_kids}, ${brand_id}, ${name}, ${sizes}, ${color_id},
+      ${gender_id}, ${is_for_kids}, ${brand_id}, ${name}, ${sizes}, ${color_id},
       ${pattern_type_id}, ${neckline_type_id}, ${collar_type_id}, ${materials},
       ${sleeve_length_code_id}, ${shape_type_id}, ${fit_type_id}, ${clothing_length_code_id},
       ${total_length}, ${trouser_rise_type_id}, ${fastening_type_id}, ${multipack_id},
@@ -351,7 +351,7 @@ async function populateProductsCatalog(pgClient: Client) {
 
   const insertIntoProductsCatalogQuery = `
     INSERT INTO products_catalog
-    ( article_number, product_category_id, product_sub_category_id, gender_type_id,
+    ( article_number, product_category_id, product_sub_category_id, gender_id,
      is_for_kids, brand_id, name, sizes, color_id, pattern_type_id, neckline_type_id,
      collar_type_id, materials, sleeve_length_code_id, shape_type_id, fit_type_id,
      clothing_length_code_id, total_length, trouser_rise_type_id, fastening_type_id,

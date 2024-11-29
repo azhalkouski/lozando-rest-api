@@ -2,7 +2,7 @@ export type CamelCaseProductT = {
   articleNumber: string;
   category: string;
   subCategory: string;
-  genderType: string;
+  gender: string;
   isForKids: boolean;
   brand: string;
   name: string;
@@ -37,7 +37,7 @@ export type SnakeCaseProductT = {
   article_number: string;
   product_category_id: number;
   product_sub_category_id: number;
-  gender_type_id: number;
+  gender_id: number;
   is_for_kids: boolean;
   brand_id: number;
   name: string;
@@ -72,9 +72,9 @@ export type CamelCaseProductKeys = keyof CamelCaseProductT;
 
 export type SnakeCaseProductKeys = keyof SnakeCaseProductT;
 
-export type GenderTypesT = 'women' | 'men' | 'unisex';
+export type GenderTypesT = 'women' | 'men';
 
 export type ListOfProductsQuery = {
-  genderType: GenderTypesT | GenderTypesT[] | undefined;
-  isForKids: boolean;
+  genderType: GenderTypesT;
+  isForKids: boolean | undefined;
 }

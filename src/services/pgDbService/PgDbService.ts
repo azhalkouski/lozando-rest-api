@@ -24,25 +24,16 @@ class PgDbService implements RelationalDbServiceI {
   /** 
    * @throws {AppException}
    */
-  async getClothingProducts({genderType, isForKids}: ListOfProductsQuery) {
+  async getClothingProducts({genderType, isForKids = false}: ListOfProductsQuery) {
     try {
       let whereClause = `is_for_kids = ${isForKids}`;
 
-    
-      if (genderType && genderType.length > 0) {
-        const { rows: genderIds } = await this.pgPool.query(
-          `SELECT id, name FROM gender_types;`
-        );
+      const { rows: genderIds } = await this.pgPool.query(
+        `SELECT id, name FROM genders;`
+      );
 
-        const genderTypes = Array.isArray(genderType) ? genderType : [genderType];
-        const genderTypeIds = genderTypes.map((genderTypeName) => {
-          return genderIds.find(({id, name}) => name === genderTypeName).id;
-        });
-
-        if (genderTypeIds.length > 0) {
-          whereClause = `gender_type_id IN (${genderTypeIds}) AND  ${whereClause}`;
-        }
-      }
+      const genderTypeId = genderIds.find(({id, name}) => name === genderType).id
+      whereClause = `gender_id = ${genderTypeId} AND  ${whereClause}`;
 
       const query = `SELECT * FROM products_catalog WHERE ${whereClause};`;
       const { rows } = await this.pgPool.query<SnakeCaseProductT>(query);

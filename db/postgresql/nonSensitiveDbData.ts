@@ -26,10 +26,9 @@ export const BRANDS = [
   'Seasalt CornwallXYZ'
 ];
 
-export const GENDER_TYPES = [
+export const GENDERS = [
   'women',
-  'men',
-  'unisex'
+  'men'
 ];
 
 export const PRODUCT_CATEGORIES_AGGREGATION_GROUPS = [
