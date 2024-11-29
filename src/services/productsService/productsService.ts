@@ -1,9 +1,9 @@
 import dbPool from '../pgDbService/pgClient';
-import { ProductT } from '../../types';
+import { CamelCaseProductT } from '../../types';
 import { productsFieldNamesToCamelCase } from './transformUtils';
 import PgDbService from '../pgDbService/PgDbService';
 
-export async function getClothingProducts(): Promise<ProductT[]> {
+export async function getClothingProducts(): Promise<CamelCaseProductT[]> {
   const pgDbService = new PgDbService(dbPool);
   const productsDbRows = await pgDbService.getClothingProducts();
 

@@ -1,7 +1,7 @@
 import { configDotenv } from 'dotenv';
 import pg, { Client } from 'pg';
 const { Client: PgClient } = pg;
-import { DBProductKeys, InputProductKeys } from '../../src/types';
+import { CamelCaseProductKeys, SnakeCaseProductKeys } from '../../src/types';
 import { clothingProducts } from '../../productsData';
 import {
   BRANDS,
@@ -167,8 +167,8 @@ async function populateProductsCatalog(pgClient: Client) {
    * Since I don't use an ORM, I need to map input objects to database objects.
    * The keys are not the same and I need to map them.
    */
-  const sqlFieldsToInputFields: {[key in DBProductKeys]: InputProductKeys} = {
-    'article_number': 'article_number',
+  const sqlFieldsToInputFields: {[key in SnakeCaseProductKeys]: CamelCaseProductKeys} = {
+    'article_number': 'articleNumber',
     'product_category_id': 'category',
     'product_sub_category_id': 'subCategory',
     'gender_id': 'gender',
@@ -181,25 +181,25 @@ async function populateProductsCatalog(pgClient: Client) {
     'neckline_type_id': 'neckline',
     'collar_type_id': 'collar',
     'materials':  'materials',
-    'sleeve_length_code_id': 'sleeve_length',
+    'sleeve_length_code_id': 'sleeveLength',
     'shape_type_id': 'shape',
     'fit_type_id': 'fit',
-    'fit_length_code_id': 'clothing_length',
-    'total_length': 'total_length',
-    'trouser_rise_type_id': 'trouser_rise',
+    'fit_length_code_id': 'clothingLength',
+    'total_length': 'totalLength',
+    'trouser_rise_type_id': 'trouserRise',
     'fastening_type_id': 'fastening',
     'multipack_id': 'multipack',
     'pockets': 'pockets',
     'qualities': 'qualities',
-    'back_width': 'back_width',
-    'hood_detail': 'hood_detail',
-    'specialty_size_id': "special_size",
+    'back_width': 'backWidth',
+    'hood_detail': 'hoodDetail',
+    'specialty_size_id': "specialSize",
     'occasion_type_id': 'occasion',
     'style_id': 'style',
     'cut_type': 'cut',
     'collection_id': 'collection',
     'additional_details': 'details',
-    'purchase_price': 'purchase_price',
+    'purchase_price': 'purchasePrice',
   };
 
   /**
@@ -258,8 +258,8 @@ async function populateProductsCatalog(pgClient: Client) {
    */
   const productValues = clothingProducts.map((product) => {
 
-    function getId(allRows: {id: string, name: string}[], sqlFieldName: DBProductKeys) {
-      const productFiledName: InputProductKeys = sqlFieldsToInputFields[sqlFieldName];
+    function getId(allRows: {id: string, name: string}[], sqlFieldName: SnakeCaseProductKeys) {
+      const productFiledName: CamelCaseProductKeys = sqlFieldsToInputFields[sqlFieldName];
 
 
       const valueInProduct = product[productFiledName];

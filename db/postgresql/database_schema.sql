@@ -68,6 +68,7 @@ CREATE TABLE sleeve_length_codes (
   name VARCHAR(20) UNIQUE NOT NULL
 );
 
+-- ! CREATE TABLE clothing_length_codes (
 CREATE TABLE fit_length_codes (
   id SERIAL PRIMARY KEY,
   name VARCHAR(15) UNIQUE NOT NULL

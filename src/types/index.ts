@@ -1,39 +1,5 @@
-export type InsertProductT = {
-  modelName: string;
-  description?: string;
-  brandId: number;
-  categoryId: number;
-  size: string;
-  color: string;
-  forMen: boolean;
-  forWomen: boolean;
-  price: number;
-};
-
-export type ProductT = InsertProductT & {
-  id: number;
-  discountId: number | null;
-  createdAt: Date;
-}
-
-export type SnakeCaseDBProductT = {
-  id: number;
-  model_name: string;
-  description: string;
-  brand_id: number;
-  category_id: number;
-  size: string;
-  color: string;
-  for_men: boolean;
-  for_women: boolean;
-  price: number;
-  discount_id: number;
-  created_at: Date
-};
-
-
-export type InputProductT = {
-  article_number: string;
+export type CamelCaseProductT = {
+  articleNumber: string;
   category: string;
   subCategory: string;
   gender: string;
@@ -46,28 +12,28 @@ export type InputProductT = {
   neckline: string;
   collar: string;
   materials: {[key: string]: string};
-  sleeve_length: string;
+  sleeveLength: string;
   shape: string;
   fit: string;
-  clothing_length: string;
-  total_length: string;
-  trouser_rise: string;
+  clothingLength: string;
+  totalLength: string;
+  trouserRise: string;
   fastening: string;
   multipack: string;
   pockets: string;
   qualities: string;
-  back_width: string;
-  hood_detail: string;
-  special_size: string;
+  backWidth: string;
+  hoodDetail: string;
+  specialSize: string;
   occasion: string;
   style: string;
   cut: string;
   collection: string;
   details: string;
-  purchase_price: string;
+  purchasePrice: string;
 };
 
-export type DBProductT = {
+export type SnakeCaseProductT = {
   article_number: string;
   product_category_id: number;
   product_sub_category_id: number;
@@ -102,6 +68,6 @@ export type DBProductT = {
   purchase_price: string;
 };
 
-export type InputProductKeys = keyof InputProductT;
+export type CamelCaseProductKeys = keyof CamelCaseProductT;
 
-export type DBProductKeys = keyof DBProductT;
+export type SnakeCaseProductKeys = keyof SnakeCaseProductT;

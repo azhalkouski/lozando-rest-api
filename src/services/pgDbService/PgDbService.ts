@@ -1,12 +1,12 @@
 import { Pool } from 'pg';
-import { SnakeCaseDBProductT } from '../../types';
+import { SnakeCaseProductT } from '../../types';
 import AppException from '../../exceptions/AppException';
 import { getDbException } from './utils';
 
 
 interface RelationalDbServiceI {
   readonly pgPool: Pool;
-  getClothingProducts(): Promise<SnakeCaseDBProductT[]>
+  getClothingProducts(): Promise<SnakeCaseProductT[]>
 }
 
 /**
@@ -27,7 +27,7 @@ class PgDbService implements RelationalDbServiceI {
     const query = 'SELECT * FROM clothing_products LIMIT 100';
 
     try {
-      const { rows } = await this.pgPool.query<SnakeCaseDBProductT>(query);
+      const { rows } = await this.pgPool.query<SnakeCaseProductT>(query);
 
       return rows;
     } catch(err) {
