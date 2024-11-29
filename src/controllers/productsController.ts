@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { getClothingProducts } from '../services/productsService/productsService';
+import { ListOfProductsQuery } from '../types';
 
 export async function getListOfProducts(
   req: Request, res: Response, next: NextFunction
 ) {
-  const clothingProducts = await getClothingProducts();
+  const query = req.query as unknown as ListOfProductsQuery;
+  const clothingProducts = await getClothingProducts(query);
 
   res.json(clothingProducts);
 };
