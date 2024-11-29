@@ -74,7 +74,10 @@ export type SnakeCaseProductKeys = keyof SnakeCaseProductT;
 
 export type GenderT = 'women' | 'men';
 
+export type ProductCategoryAggregationGroupT = 'clothing' | 'shoes';
+
 export type ListOfProductsQuery = {
   gender: GenderT;
+  categoryGroup: ProductCategoryAggregationGroupT | undefined;
   isForKids: boolean | undefined;
 }
